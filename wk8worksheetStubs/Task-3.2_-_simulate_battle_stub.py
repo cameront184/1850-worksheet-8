@@ -21,7 +21,7 @@ class Pokemon:
             name (str): The name of the Pokemon (e.g., "pikachu")
         """
         # TODO: Store the Pokemon's name (lowercase)
-
+        self.name = name.lower()
         # TODO: Fetch Pokemon data from PokeAPI
         # - Create the URL: f"https://pokeapi.co/api/v2/pokemon/{name.lower()}"
         # - Make GET request
@@ -32,6 +32,7 @@ class Pokemon:
 
         if response.status_code != 200:
             print("Pokemon not found")
+            return
 
         data = response.json()
 
@@ -48,7 +49,7 @@ class Pokemon:
 
         self.stats = {
             "attack": self._calculate_stat(base_stats["attack"]),
-            "defense": self._calculate_stat(base_stats["defnse"]),
+            "defense": self._calculate_stat(base_stats["defense"]),
             "speed" : self._calculate_stat(base_stats["speed"])
         }
 
@@ -130,7 +131,9 @@ class Pokemon:
         # TODO: Reduce current_hp by amount
         # Make sure HP doesn't go below 0
         self.current_hp -= amount
-        self.current_hp >= 0
+        if self.current_hp < 0:
+            self.current_hp = 0
+        
 
     
 
@@ -156,7 +159,7 @@ class Pokemon:
             str: A nice display of the Pokemon's name and HP
         """
         # TODO: Return a string like "Pikachu (HP: 95/120)"
-        return f"{self.name} HP: {self.current_hp/self.max}"
+        return f"{self.name} (HP: {self.current_hp}/{self.max_hp})"
 
 
 def simulate_battle(pokemon1_name, pokemon2_name):
@@ -168,23 +171,28 @@ def simulate_battle(pokemon1_name, pokemon2_name):
         pokemon2_name (str): Name of the second Pokemon
     """
     # TODO: Create two Pokemon objects
-    pokemon1 = pokemon1_name
-    pokemon2 = pokemon2_name
+    round_number = 1
+    print("ROUND 1")
+    pokemon1 = Pokemon(pokemon1_name)
+    pokemon2 = Pokemon(pokemon2_name)
     # TODO: Display battle start message
     # Show both Pokemon names and initial HP
-    Print("BATTLE STARTING")
-    print("pokemon1.name HP: pokemon1.current_hp / pokemon1.max_hp")
-    print("pokemon2.name HP: pokemon2.current_hp / pokemon2.max_hp")
-
+    print("BATTLE STARTING")
+    print(pokemon1.name.title(), "HP:", pokemon1.current_hp, "/", pokemon1.max_hp)
+    print(pokemon2.name.title(), "HP:", pokemon2.current_hp, "/", pokemon2.max_hp)
 
     # TODO: Determine who attacks first based on speed
     # The Pokemon with higher speed goes first
     # Hint: Compare pokemon1.stats['speed'] with pokemon2.stats['speed']
     if pokemon1.stats["speed"] >= pokemon2.stats["speed"]:
-        attacker=pokemon1
-        defender=pokemon2
-    print("{attacker.name} strikes first(Speed:,
-          attacker.stats["speed"], "vs", defender.stats["speed"], ")")
+        attacker = pokemon1
+        defender = pokemon2
+    else:
+        attacker = pokemon2
+        defender = pokemon1
+
+print(attacker.name.title(), "strikes first (Speed:",
+      attacker.stats["speed"], "vs", defender.stats["speed"], ")")
 
     # TODO: Battle loop
     # - Keep track of round number
@@ -198,7 +206,7 @@ def simulate_battle(pokemon1_name, pokemon2_name):
 
     # TODO: Display battle result
     # Show which Pokemon won and their remaining HP
-    while attacker.is_fainted() == False and defender.is_fainted() == False:
+while attacker.is_fainted() == False and defender.is_fainted() == False:
         damage = attacker.attack(defender)
         print(attacker.name.title(), "attacks", defender.name.title(),
               "for", damage, "damage!")
@@ -212,10 +220,10 @@ def simulate_battle(pokemon1_name, pokemon2_name):
         defender = temp
 
         round_number = round_number + 1 
-        
-    print("\n=== BATTLE END ===")
-    print("Winner:", attacker.name.title())
-    print("Remaining HP:", attacker.current_hp, "/", attacker.max_hp)
+
+print("\n=== BATTLE END ===")
+print("Winner:", attacker.name.title())
+print("Remaining HP:", attacker.current_hp, "/", attacker.max_hp)
 
 if __name__ == "__main__":
     # Test your battle simulator
