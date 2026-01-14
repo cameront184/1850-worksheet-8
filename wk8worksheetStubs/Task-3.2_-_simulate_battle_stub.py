@@ -1,3 +1,4 @@
+# Name: Cameron Taylor Student_id: 201982320
 """
 Exercise 3.2: Simulate a Turn-Based Battle (Class-Based)
 
