@@ -27,7 +27,6 @@ class Pokemon:
         # - Make GET request
         # - Check response status code (raise error if not 200)
         # - Store the JSON data
-        self.name = name.lower()
 
         url = f"https://pokeapi.co/api/v2/pokemon/{name.lower()}"
         response = httpx.get(url)
